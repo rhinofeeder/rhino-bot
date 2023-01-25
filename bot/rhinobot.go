@@ -31,10 +31,10 @@ type RhinoBot struct {
 	Port        string
 	PrivatePath string
 	Server      string
-	Token       string
 	commands    map[string]command.Command
 	conn        net.Conn
 	startTime   time.Time
+	token       string
 }
 
 func (rb *RhinoBot) RegisterCommand(commands ...command.Command) {
@@ -106,7 +106,17 @@ func (rb *RhinoBot) HandleChat() error {
 								}
 							} else {
 								rb.handleCommand(registeredCommand, cmdMatches[2])
+								time.Sleep(rb.MsgRate)
 							}
+						}
+						if cmd == "commands" {
+							commandNames := make([]string, 0, len(rb.commands))
+							for commandName := range rb.commands {
+								commandNames = append(commandNames, "!"+commandName)
+							}
+
+							rb.Say(strings.Join(commandNames, ", "))
+							time.Sleep(rb.MsgRate)
 						}
 					}
 				}
@@ -127,13 +137,11 @@ func (rb *RhinoBot) handleCommand(registeredCommand command.Command, message str
 	if sayErr != nil {
 		fmt.Printf("Error in Say(): %v\n", sayErr)
 	}
-
-	time.Sleep(rb.MsgRate)
 }
 
 func (rb *RhinoBot) JoinChannel() {
 	fmt.Printf("[%s] Joining #%s...\n", timeStamp(), rb.Channel)
-	_, _ = rb.conn.Write([]byte("PASS " + rb.Token + "\r\n"))
+	_, _ = rb.conn.Write([]byte("PASS " + rb.token + "\r\n"))
 	_, _ = rb.conn.Write([]byte("NICK " + rb.Name + "\r\n"))
 	_, _ = rb.conn.Write([]byte("JOIN #" + rb.Channel + "\r\n"))
 	_, _ = rb.conn.Write([]byte("CAP REQ :twitch.tv/tags\r\n"))
@@ -147,7 +155,7 @@ func (rb *RhinoBot) ReadCredentials() error {
 		return err
 	}
 
-	rb.Token = string(token)
+	rb.token = string(token)
 
 	return nil
 }
