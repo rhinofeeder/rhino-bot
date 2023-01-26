@@ -6,7 +6,7 @@ func (nc *NameCommand) Name() string {
 	return "name"
 }
 
-func (nc *NameCommand) Handler(_ string) (string, error) {
+func (nc *NameCommand) Handle(_ string) (string, error) {
 	return "/me https://youtu.be/R22zSrpeSA4?t=127", nil
 }
 

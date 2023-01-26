@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"rhino-bot/bot"
 	"rhino-bot/command"
 	"time"
@@ -8,7 +9,10 @@ import (
 
 var commands = []command.Command{
 	&command.DiscordCommand{},
-	&command.FeedCommand{},
+	&command.FeedCommand{
+		ReadFile:  os.ReadFile,
+		WriteFile: os.WriteFile,
+	},
 	&command.NameCommand{},
 	&command.OoooCommand{},
 	&command.SoCommand{},

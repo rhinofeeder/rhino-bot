@@ -6,7 +6,7 @@ func (oc *OoooCommand) Name() string {
 	return "oooo"
 }
 
-func (oc *OoooCommand) Handler(message string) (string, error) {
+func (oc *OoooCommand) Handle(message string) (string, error) {
 	oooo := ""
 	for _, ch := range message {
 		if ch == 'o' || ch == 'O' {

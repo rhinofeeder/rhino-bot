@@ -10,14 +10,17 @@ const (
 	filePath = "persistence/rhinosfed"
 )
 
-type FeedCommand struct{}
+type FeedCommand struct {
+	ReadFile  func(name string) ([]byte, error)
+	WriteFile func(name string, data []byte, perm os.FileMode) error
+}
 
 func (fc FeedCommand) Name() string {
 	return "feed"
 }
 
-func (fc FeedCommand) Handler(_ string) (string, error) {
-	file, err := os.ReadFile(filePath)
+func (fc FeedCommand) Handle(_ string) (string, error) {
+	file, err := fc.ReadFile(filePath)
 	if err != nil {
 		return "", err
 	}
@@ -25,7 +28,7 @@ func (fc FeedCommand) Handler(_ string) (string, error) {
 	rhinosFed, _ := strconv.Atoi(string(file))
 	rhinosFed++
 
-	if err = os.WriteFile(filePath, []byte(strconv.Itoa(rhinosFed)), 0644); err != nil {
+	if err = fc.WriteFile(filePath, []byte(strconv.Itoa(rhinosFed)), 0644); err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("Rhinos fed: %v", rhinosFed), nil

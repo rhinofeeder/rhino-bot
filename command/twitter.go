@@ -6,7 +6,7 @@ func (tc *TwitterCommand) Name() string {
 	return "twitter"
 }
 
-func (tc *TwitterCommand) Handler(_ string) (string, error) {
+func (tc *TwitterCommand) Handle(_ string) (string, error) {
 	return "/me https://twitter.com/RhinoFeeder", nil
 }
 

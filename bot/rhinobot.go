@@ -127,7 +127,7 @@ func (rb *RhinoBot) HandleChat() error {
 
 func (rb *RhinoBot) handleCommand(registeredCommand command.Command, message string) {
 	var sayErr error
-	if response, err := registeredCommand.Handler(message); err != nil {
+	if response, err := registeredCommand.Handle(message); err != nil {
 		sayErr = rb.Say("Oops, there was an issue!")
 		fmt.Printf("Error: %v\n", err)
 	} else {
