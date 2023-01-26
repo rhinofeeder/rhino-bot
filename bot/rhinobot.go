@@ -66,7 +66,7 @@ func (rb *RhinoBot) Connect() {
 
 func (rb *RhinoBot) Disconnect() {
 	_ = rb.conn.Close()
-	upTime := time.Now().Sub(rb.startTime).Seconds()
+	upTime := time.Since(rb.startTime).Seconds()
 	fmt.Printf("[%s] Closed connection from %s! | Live for: %fs\n", timeStamp(), rb.Server, upTime)
 }
 
@@ -115,7 +115,14 @@ func (rb *RhinoBot) HandleChat() error {
 								commandNames = append(commandNames, "!"+commandName)
 							}
 
-							rb.Say(strings.Join(commandNames, ", "))
+							err = rb.Say(strings.Join(commandNames, ", "))
+							if err != nil {
+								sayErr := rb.Say("Oops, there was an issue!")
+								fmt.Printf("Error: %v\n", err)
+								if sayErr != nil {
+									fmt.Printf("Error in Say(): %v\n", sayErr)
+								}
+							}
 							time.Sleep(rb.MsgRate)
 						}
 					}

@@ -8,7 +8,7 @@ import (
 
 type SoCommand struct{}
 
-var UsernameRegex = regexp.MustCompile("^[a-zA-Z0-9]\\w{3,24}$")
+var UsernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]\w{3,24}$`)
 
 func (sc *SoCommand) Name() string {
 	return "so"
