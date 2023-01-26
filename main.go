@@ -32,7 +32,3 @@ func main() {
 	rhinoBot.RegisterCommand(commands...)
 	rhinoBot.Start()
 }
-
-func unused() {
-	return
-}
