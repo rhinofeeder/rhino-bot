@@ -13,3 +13,7 @@ func (nc *NameCommand) Handle(_ string) (string, error) {
 func (nc *NameCommand) RequiresMod() bool {
 	return false
 }
+
+func (nc *NameCommand) Trigger() string {
+	return "command"
+}

@@ -13,3 +13,7 @@ func (dc *DiscordCommand) Handle(_ string) (string, error) {
 func (dc *DiscordCommand) RequiresMod() bool {
 	return false
 }
+
+func (dc *DiscordCommand) Trigger() string {
+	return "command"
+}

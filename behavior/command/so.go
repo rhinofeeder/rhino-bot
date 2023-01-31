@@ -24,3 +24,7 @@ func (sc *SoCommand) Handle(message string) (string, error) {
 func (sc *SoCommand) RequiresMod() bool {
 	return true
 }
+
+func (sc *SoCommand) Trigger() string {
+	return "command"
+}

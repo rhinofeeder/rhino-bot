@@ -76,3 +76,7 @@ func (oc *OoooCommand) Handle(message string) (string, error) {
 func (oc *OoooCommand) RequiresMod() bool {
 	return false
 }
+
+func (oc *OoooCommand) Trigger() string {
+	return "command"
+}

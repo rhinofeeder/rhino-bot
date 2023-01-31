@@ -13,3 +13,7 @@ func (yt *YtCommand) Handle(_ string) (string, error) {
 func (yt *YtCommand) RequiresMod() bool {
 	return false
 }
+
+func (yt *YtCommand) Trigger() string {
+	return "command"
+}

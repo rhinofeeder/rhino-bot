@@ -13,3 +13,7 @@ func (tc *TwitterCommand) Handle(_ string) (string, error) {
 func (tc *TwitterCommand) RequiresMod() bool {
 	return false
 }
+
+func (tc *TwitterCommand) Trigger() string {
+	return "command"
+}

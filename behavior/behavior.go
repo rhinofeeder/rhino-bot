@@ -1,7 +1,7 @@
-package command
+package behavior
 
-type Command interface {
-	Name() string
+type Behavior interface {
 	Handle(message string) (string, error)
 	RequiresMod() bool
+	Trigger() string
 }

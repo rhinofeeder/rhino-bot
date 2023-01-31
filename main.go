@@ -2,12 +2,15 @@ package main
 
 import (
 	"os"
+	"rhino-bot/behavior"
+	"rhino-bot/behavior/chance"
+	"rhino-bot/behavior/command"
+	"rhino-bot/behavior/timer"
 	"rhino-bot/bot"
-	"rhino-bot/command"
 	"time"
 )
 
-var commands = []command.Command{
+var behaviors = []behavior.Behavior{
 	&command.DiscordCommand{},
 	&command.FeedCommand{
 		ReadFile:  os.ReadFile,
@@ -18,6 +21,8 @@ var commands = []command.Command{
 	&command.SoCommand{},
 	&command.TwitterCommand{},
 	&command.YtCommand{},
+	&chance.SpongemockCommand{},
+	&timer.Discord{},
 }
 
 func main() {
@@ -29,6 +34,6 @@ func main() {
 		PrivatePath: "./private/oauth",
 		Server:      "irc.chat.twitch.tv",
 	}
-	rhinoBot.RegisterCommand(commands...)
+	rhinoBot.RegisterBehavior(behaviors...)
 	rhinoBot.Start()
 }

@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net"
 	"net/textproto"
 	"os"
 	"regexp"
-	"rhino-bot/command"
+	"rhino-bot/behavior"
 	"strings"
 	"time"
 )
@@ -25,24 +26,67 @@ var (
 )
 
 type RhinoBot struct {
-	Channel     string
-	MsgRate     time.Duration
-	Name        string
-	Port        string
-	PrivatePath string
-	Server      string
-	commands    map[string]command.Command
-	conn        net.Conn
-	startTime   time.Time
-	token       string
+	Channel      string
+	MsgRate      time.Duration
+	Name         string
+	Port         string
+	PrivatePath  string
+	Server       string
+	commands     map[string]behavior.Command
+	conditionals []behavior.Chance
+	conn         net.Conn
+	startTime    time.Time
+	token        string
 }
 
-func (rb *RhinoBot) RegisterCommand(commands ...command.Command) {
-	if rb.commands == nil {
-		rb.commands = make(map[string]command.Command, len(commands))
-	}
-	for _, c := range commands {
-		rb.commands[c.Name()] = c
+func (rb *RhinoBot) RegisterBehavior(behaviors ...behavior.Behavior) {
+	for _, b := range behaviors {
+		trigger := b.Trigger()
+
+		switch trigger {
+		case "command":
+			command, ok := b.(behavior.Command)
+			if !ok {
+				fmt.Printf("There was an error registering command of type %v\n", trigger)
+			}
+			if rb.commands == nil {
+				rb.commands = make(map[string]behavior.Command)
+			}
+			rb.commands[command.Name()] = command
+		case "timer":
+			timer, ok := b.(behavior.Timer)
+			if !ok {
+				fmt.Printf("There was an error registering command of type %v\n", trigger)
+			}
+			ticker := time.NewTicker(timer.Duration())
+			go func() {
+				for {
+					<-ticker.C
+					result, err := timer.Handle("")
+					if err != nil {
+						fmt.Printf("There was an error registering command of type %v: %v\n", trigger, err)
+					}
+					sayErr := rb.Say(result)
+					if sayErr != nil {
+						fmt.Printf("Error in Say(): %v\n", sayErr)
+					}
+				}
+			}()
+		case "chance":
+			rand.Seed(time.Now().UnixNano())
+
+			conditional, ok := b.(behavior.Chance)
+			if !ok {
+				fmt.Printf("There was an error registering command of type %v\n", trigger)
+			}
+			if rb.conditionals == nil {
+				rb.conditionals = []behavior.Chance{}
+			}
+
+			rb.conditionals = append(rb.conditionals, conditional)
+		default:
+			fmt.Printf("%v is not a valid trigger for a behavior\n", b.Trigger())
+		}
 	}
 }
 
@@ -94,7 +138,6 @@ func (rb *RhinoBot) HandleChat() error {
 				if msgType == "PRIVMSG" {
 					msg := matches[4]
 
-					// parse commands from user message
 					cmdMatches := CmdRegex.FindStringSubmatch(msg)
 					if cmdMatches != nil {
 						cmd := cmdMatches[1]
@@ -123,16 +166,31 @@ func (rb *RhinoBot) HandleChat() error {
 									fmt.Printf("Error in Say(): %v\n", sayErr)
 								}
 							}
-							time.Sleep(rb.MsgRate)
+						}
+					} else {
+						for _, conditional := range rb.conditionals {
+							if conditional.ShouldHandle() {
+								response, _ := conditional.Handle(msg)
+								err = rb.Say(response)
+								if err != nil {
+									sayErr := rb.Say("Oops, there was an issue!")
+									fmt.Printf("Error: %v\n", err)
+									if sayErr != nil {
+										fmt.Printf("Error in Say(): %v\n", sayErr)
+									}
+								}
+								break
+							}
 						}
 					}
 				}
 			}
+			time.Sleep(rb.MsgRate)
 		}
 	}
 }
 
-func (rb *RhinoBot) handleCommand(registeredCommand command.Command, message string) {
+func (rb *RhinoBot) handleCommand(registeredCommand behavior.Behavior, message string) {
 	var sayErr error
 	if response, err := registeredCommand.Handle(message); err != nil {
 		sayErr = rb.Say("Oops, there was an issue!")
