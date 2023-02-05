@@ -24,5 +24,5 @@ func (d *Discord) Trigger() string {
 }
 
 func (d *Discord) Duration() time.Duration {
-	return 2 * time.Second
+	return 15 * time.Minute
 }
