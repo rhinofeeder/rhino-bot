@@ -26,6 +26,7 @@ var commands = []behavior.Command{
 
 var timers = []behavior.Timer{
 	&timer.Discord{},
+	&command.StratPlsCommand{},
 }
 
 var chances = []behavior.Chance{
