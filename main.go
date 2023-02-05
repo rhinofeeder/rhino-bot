@@ -20,6 +20,7 @@ var commands = []behavior.Command{
 	&command.NameCommand{},
 	&command.OoooCommand{},
 	&command.SoCommand{},
+	&command.StratPlsCommand{},
 	&command.TwitterCommand{},
 	&command.YtCommand{},
 }
