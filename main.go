@@ -23,6 +23,7 @@ var behaviors = []behavior.Behavior{
 	&command.YtCommand{},
 	&chance.SpongemockCommand{},
 	&timer.Discord{},
+	&command.StratPlsCommand{},
 }
 
 func main() {
