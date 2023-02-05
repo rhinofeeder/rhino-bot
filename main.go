@@ -10,19 +10,26 @@ import (
 	"time"
 )
 
-var behaviors = []behavior.Behavior{
+var commands = []behavior.Command{
 	&command.DiscordCommand{},
 	&command.FeedCommand{
 		ReadFile:  os.ReadFile,
 		WriteFile: os.WriteFile,
 	},
+	&command.LurkCommand{},
 	&command.NameCommand{},
 	&command.OoooCommand{},
 	&command.SoCommand{},
 	&command.TwitterCommand{},
 	&command.YtCommand{},
-	&chance.SpongemockCommand{},
+}
+
+var timers = []behavior.Timer{
 	&timer.Discord{},
+}
+
+var chances = []behavior.Chance{
+	&chance.SpongemockCommand{},
 }
 
 func main() {
@@ -34,6 +41,8 @@ func main() {
 		PrivatePath: "./private/oauth",
 		Server:      "irc.chat.twitch.tv",
 	}
-	rhinoBot.RegisterBehavior(behaviors...)
+	rhinoBot.RegisterCommands(commands...)
+	rhinoBot.RegisterTimers(timers...)
+	rhinoBot.RegisterChances(chances...)
 	rhinoBot.Start()
 }

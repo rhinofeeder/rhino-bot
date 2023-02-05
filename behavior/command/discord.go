@@ -1,12 +1,17 @@
 package command
 
-type DiscordCommand struct{}
+import "time"
+
+type DiscordCommand struct {
+	lastCalled time.Time
+}
 
 func (dc *DiscordCommand) Name() string {
 	return "discord"
 }
 
 func (dc *DiscordCommand) Handle(_ string) (string, error) {
+	dc.lastCalled = time.Now()
 	return "/me https://discord.com/invite/mrzNnq6", nil
 }
 
@@ -14,6 +19,6 @@ func (dc *DiscordCommand) RequiresMod() bool {
 	return false
 }
 
-func (dc *DiscordCommand) Trigger() string {
-	return "command"
+func (dc *DiscordCommand) OnCooldown() bool {
+	return !dc.lastCalled.IsZero() && time.Since(dc.lastCalled) < 5*time.Second
 }

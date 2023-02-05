@@ -19,10 +19,6 @@ func (d *Discord) RequiresMod() bool {
 	return false
 }
 
-func (d *Discord) Trigger() string {
-	return "timer"
-}
-
 func (d *Discord) Duration() time.Duration {
 	return 15 * time.Minute
 }

@@ -1,6 +1,8 @@
 package command
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestDiscordCommand_Handle(t *testing.T) {
 	dc := &DiscordCommand{}

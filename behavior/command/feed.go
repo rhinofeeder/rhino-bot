@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
@@ -11,8 +12,9 @@ const (
 )
 
 type FeedCommand struct {
-	ReadFile  func(name string) ([]byte, error)
-	WriteFile func(name string, data []byte, perm os.FileMode) error
+	ReadFile   func(name string) ([]byte, error)
+	WriteFile  func(name string, data []byte, perm os.FileMode) error
+	lastCalled time.Time
 }
 
 func (fc *FeedCommand) Name() string {
@@ -20,6 +22,8 @@ func (fc *FeedCommand) Name() string {
 }
 
 func (fc *FeedCommand) Handle(_ string) (string, error) {
+	fc.lastCalled = time.Now()
+
 	file, err := fc.ReadFile(filePath)
 	if err != nil {
 		return "", err
@@ -38,6 +42,6 @@ func (fc *FeedCommand) RequiresMod() bool {
 	return false
 }
 
-func (fc *FeedCommand) Trigger() string {
-	return "command"
+func (fc *FeedCommand) OnCooldown() bool {
+	return !fc.lastCalled.IsZero() && time.Since(fc.lastCalled) < 5*time.Second
 }

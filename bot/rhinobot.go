@@ -26,67 +26,55 @@ var (
 )
 
 type RhinoBot struct {
-	Channel      string
-	MsgRate      time.Duration
-	Name         string
-	Port         string
-	PrivatePath  string
-	Server       string
-	commands     map[string]behavior.Command
-	conditionals []behavior.Chance
-	conn         net.Conn
-	startTime    time.Time
-	token        string
+	Channel     string
+	MsgRate     time.Duration
+	Name        string
+	Port        string
+	PrivatePath string
+	Server      string
+	commands    map[string]behavior.Command
+	chances     []behavior.Chance
+	conn        net.Conn
+	startTime   time.Time
+	token       string
 }
 
-func (rb *RhinoBot) RegisterBehavior(behaviors ...behavior.Behavior) {
-	for _, b := range behaviors {
-		trigger := b.Trigger()
-
-		switch trigger {
-		case "command":
-			command, ok := b.(behavior.Command)
-			if !ok {
-				fmt.Printf("There was an error registering command of type %v\n", trigger)
-			}
-			if rb.commands == nil {
-				rb.commands = make(map[string]behavior.Command)
-			}
-			rb.commands[command.Name()] = command
-		case "timer":
-			timer, ok := b.(behavior.Timer)
-			if !ok {
-				fmt.Printf("There was an error registering command of type %v\n", trigger)
-			}
-			ticker := time.NewTicker(timer.Duration())
-			go func() {
-				for {
-					<-ticker.C
-					result, err := timer.Handle("")
-					if err != nil {
-						fmt.Printf("There was an error registering command of type %v: %v\n", trigger, err)
-					}
-					sayErr := rb.Say(result)
-					if sayErr != nil {
-						fmt.Printf("Error in Say(): %v\n", sayErr)
-					}
-				}
-			}()
-		case "chance":
-			rand.Seed(time.Now().UnixNano())
-
-			conditional, ok := b.(behavior.Chance)
-			if !ok {
-				fmt.Printf("There was an error registering command of type %v\n", trigger)
-			}
-			if rb.conditionals == nil {
-				rb.conditionals = []behavior.Chance{}
-			}
-
-			rb.conditionals = append(rb.conditionals, conditional)
-		default:
-			fmt.Printf("%v is not a valid trigger for a behavior\n", b.Trigger())
+func (rb *RhinoBot) RegisterCommands(commands ...behavior.Command) {
+	for _, command := range commands {
+		if rb.commands == nil {
+			rb.commands = make(map[string]behavior.Command, len(commands))
 		}
+		rb.commands[command.Name()] = command
+	}
+}
+
+func (rb *RhinoBot) RegisterTimers(timers ...behavior.Timer) {
+	for _, timer := range timers {
+		ticker := time.NewTicker(timer.Duration())
+		go func(t behavior.Timer) {
+			for {
+				<-ticker.C
+				result, err := t.Handle("")
+				if err != nil {
+					fmt.Printf("There was an error registering timer: %v\n", err)
+				}
+				sayErr := rb.Say(result)
+				if sayErr != nil {
+					fmt.Printf("Error in Say(): %v\n", sayErr)
+				}
+			}
+		}(timer)
+	}
+}
+
+func (rb *RhinoBot) RegisterChances(chances ...behavior.Chance) {
+	for _, chance := range chances {
+		rand.Seed(time.Now().UnixNano())
+		if rb.chances == nil {
+			rb.chances = []behavior.Chance{}
+		}
+
+		rb.chances = append(rb.chances, chance)
 	}
 }
 
@@ -168,7 +156,7 @@ func (rb *RhinoBot) HandleChat() error {
 							}
 						}
 					} else {
-						for _, conditional := range rb.conditionals {
+						for _, conditional := range rb.chances {
 							if conditional.ShouldHandle() {
 								response, _ := conditional.Handle(msg)
 								err = rb.Say(response)
@@ -190,7 +178,12 @@ func (rb *RhinoBot) HandleChat() error {
 	}
 }
 
-func (rb *RhinoBot) handleCommand(registeredCommand behavior.Behavior, message string) {
+func (rb *RhinoBot) handleCommand(registeredCommand behavior.Command, message string) {
+	if registeredCommand.OnCooldown() {
+		fmt.Printf("[%s] Command \"%v\" is still on cooldown\n", timeStamp(), registeredCommand.Name())
+		return
+	}
+
 	var sayErr error
 	if response, err := registeredCommand.Handle(message); err != nil {
 		sayErr = rb.Say("Oops, there was an issue!")
@@ -255,7 +248,6 @@ func (rb *RhinoBot) Start() {
 		rb.JoinChannel()
 		err = rb.HandleChat()
 		if nil != err {
-
 			// attempts to reconnect upon unexpected chat error
 			time.Sleep(1000 * time.Millisecond)
 			fmt.Println(err)

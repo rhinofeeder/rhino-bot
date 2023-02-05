@@ -31,10 +31,6 @@ func (sc *SpongemockCommand) RequiresMod() bool {
 	return false
 }
 
-func (sc *SpongemockCommand) Trigger() string {
-	return "chance"
-}
-
 func (sc *SpongemockCommand) ShouldHandle() bool {
 	return behavior.GenerateBool(10)
 }

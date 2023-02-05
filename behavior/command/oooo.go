@@ -2,6 +2,7 @@ package command
 
 import (
 	"strings"
+	"time"
 )
 
 func isVowel(char byte) bool {
@@ -13,7 +14,9 @@ func isVowel(char byte) bool {
 	}
 }
 
-type OoooCommand struct{}
+type OoooCommand struct {
+	lastCalled time.Time
+}
 
 func (oc *OoooCommand) Name() string {
 	return "oooo"
@@ -23,6 +26,7 @@ func (oc *OoooCommand) Name() string {
 // - replace any "o"s if they exist
 // - if no "o"s exist, try to replace the vowel(s) closest to the center of the word
 func (oc *OoooCommand) Handle(message string) (string, error) {
+	oc.lastCalled = time.Now()
 	oooo := ""
 	if strings.Contains(strings.ToLower(message), "o") {
 		for _, ch := range message {
@@ -77,6 +81,6 @@ func (oc *OoooCommand) RequiresMod() bool {
 	return false
 }
 
-func (oc *OoooCommand) Trigger() string {
-	return "command"
+func (oc *OoooCommand) OnCooldown() bool {
+	return !oc.lastCalled.IsZero() && time.Since(oc.lastCalled) < 5*time.Second
 }
