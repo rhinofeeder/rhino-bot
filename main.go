@@ -22,11 +22,11 @@ var commands = []behavior.Command{
 	&command.SoCommand{},
 	&command.TwitterCommand{},
 	&command.YtCommand{},
+	&command.StratPlsCommand{},
 }
 
 var timers = []behavior.Timer{
 	&timer.Discord{},
-	&command.StratPlsCommand{},
 }
 
 var chances = []behavior.Chance{

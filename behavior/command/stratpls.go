@@ -6,7 +6,9 @@ import (
 	"time"
 )
 
-type StratPlsCommand struct{}
+type StratPlsCommand struct {
+	lastCalled time.Time
+}
 
 type Strat struct {
 	Template    string
@@ -62,6 +64,7 @@ func (spc *StratPlsCommand) Name() string {
 }
 
 func (spc *StratPlsCommand) Handle(message string) (string, error) {
+	spc.lastCalled = time.Now()
 	rand.Seed(time.Now().UnixNano())
 	// Copy the strats slice so we can mutate it and remove elements
 	stratsCopy := strats
@@ -84,6 +87,6 @@ func (spc *StratPlsCommand) RequiresMod() bool {
 	return false
 }
 
-func (sc *StratPlsCommand) Trigger() string {
-	return "command"
+func (spc *StratPlsCommand) OnCooldown() bool {
+	return !spc.lastCalled.IsZero() && time.Since(spc.lastCalled) < 5*time.Second
 }
