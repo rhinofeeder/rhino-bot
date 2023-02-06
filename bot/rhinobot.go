@@ -137,7 +137,6 @@ func (rb *RhinoBot) HandleChat() error {
 								}
 							} else {
 								rb.handleCommand(registeredCommand, cmdMatches[2])
-								time.Sleep(rb.MsgRate)
 							}
 						}
 						if cmd == "commands" {

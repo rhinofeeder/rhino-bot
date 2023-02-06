@@ -36,7 +36,7 @@ var chances = []behavior.Chance{
 func main() {
 	rhinoBot := bot.RhinoBot{
 		Channel:     "rhinofeeder",
-		MsgRate:     time.Duration(100/30) * time.Millisecond,
+		MsgRate:     time.Duration(30/100) * time.Millisecond,
 		Name:        "RhinoFeederBot",
 		Port:        "6667",
 		PrivatePath: "./private/oauth",
