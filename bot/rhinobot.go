@@ -154,7 +154,7 @@ func (rb *RhinoBot) HandleChat() error {
 						}
 					} else {
 						for _, conditional := range rb.chances {
-							if conditional.ShouldHandle() {
+							if conditional.ShouldHandle(msg) {
 								response, _ := conditional.Handle(msg)
 								err = rb.Say(response)
 								if err != nil {

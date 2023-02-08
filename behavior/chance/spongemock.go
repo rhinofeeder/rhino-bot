@@ -2,6 +2,7 @@ package chance
 
 import (
 	"rhino-bot/behavior"
+	"strings"
 	"unicode"
 )
 
@@ -31,6 +32,9 @@ func (sc *SpongemockCommand) RequiresMod() bool {
 	return false
 }
 
-func (sc *SpongemockCommand) ShouldHandle() bool {
+func (sc *SpongemockCommand) ShouldHandle(message string) bool {
+	if strings.Contains(strings.ToLower(message), "silksong") {
+		return true
+	}
 	return behavior.GenerateBool(10)
 }
