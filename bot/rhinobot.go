@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"math/rand"
 	"net"
 	"net/textproto"
 	"os"
@@ -69,7 +68,6 @@ func (rb *RhinoBot) RegisterTimers(timers ...behavior.Timer) {
 
 func (rb *RhinoBot) RegisterChances(chances ...behavior.Chance) {
 	for _, chance := range chances {
-		rand.Seed(time.Now().UnixNano())
 		if rb.chances == nil {
 			rb.chances = []behavior.Chance{}
 		}

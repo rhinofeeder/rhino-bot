@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"os"
 	"rhino-bot/behavior"
 	"rhino-bot/behavior/chance"
@@ -34,6 +35,8 @@ var chances = []behavior.Chance{
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	rhinoBot := bot.RhinoBot{
 		Channel:     "rhinofeeder",
 		MsgRate:     time.Duration(30/100) * time.Millisecond,
