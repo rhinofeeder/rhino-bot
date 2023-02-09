@@ -44,6 +44,11 @@ func TestOoooCommand_Handle(t *testing.T) {
 			message: "xkcd",
 			want:    "Can't find any vowels to replace MMMM",
 		},
+		{
+			name:    "empty message",
+			message: "",
+			want:    "OOOO",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

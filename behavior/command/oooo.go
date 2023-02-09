@@ -27,6 +27,9 @@ func (oc *OoooCommand) Name() string {
 // - if no "o"s exist, try to replace the vowel(s) closest to the center of the word
 func (oc *OoooCommand) Handle(message string) (string, error) {
 	oc.lastCalled = time.Now()
+	if message == "" {
+		return "OOOO", nil
+	}
 	oooo := ""
 	if strings.Contains(strings.ToLower(message), "o") {
 		for _, ch := range message {
