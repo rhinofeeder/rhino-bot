@@ -4,7 +4,7 @@ import (
 	"math/rand"
 )
 
-type Chance interface {
+type Conditional interface {
 	Behavior
 	ShouldHandle(message string) bool
 }

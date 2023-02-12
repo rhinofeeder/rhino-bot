@@ -25,17 +25,17 @@ var (
 )
 
 type RhinoBot struct {
-	Channel     string
-	MsgRate     time.Duration
-	Name        string
-	Port        string
-	PrivatePath string
-	Server      string
-	commands    map[string]behavior.Command
-	chances     []behavior.Chance
-	conn        net.Conn
-	startTime   time.Time
-	token       string
+	Channel      string
+	MsgRate      time.Duration
+	Name         string
+	Port         string
+	PrivatePath  string
+	Server       string
+	commands     map[string]behavior.Command
+	conditionals []behavior.Conditional
+	conn         net.Conn
+	startTime    time.Time
+	token        string
 }
 
 func (rb *RhinoBot) RegisterCommands(commands ...behavior.Command) {
@@ -66,13 +66,13 @@ func (rb *RhinoBot) RegisterTimers(timers ...behavior.Timer) {
 	}
 }
 
-func (rb *RhinoBot) RegisterChances(chances ...behavior.Chance) {
-	for _, chance := range chances {
-		if rb.chances == nil {
-			rb.chances = []behavior.Chance{}
+func (rb *RhinoBot) RegisterConditionals(conditionals ...behavior.Conditional) {
+	for _, conditional := range conditionals {
+		if rb.conditionals == nil {
+			rb.conditionals = []behavior.Conditional{}
 		}
 
-		rb.chances = append(rb.chances, chance)
+		rb.conditionals = append(rb.conditionals, conditional)
 	}
 }
 
@@ -153,7 +153,7 @@ func (rb *RhinoBot) HandleChat() error {
 							}
 						}
 					} else {
-						for _, conditional := range rb.chances {
+						for _, conditional := range rb.conditionals {
 							if conditional.ShouldHandle(msg) {
 								response, _ := conditional.Handle(msg)
 								err = rb.Say(response)

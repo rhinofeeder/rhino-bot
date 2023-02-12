@@ -1,4 +1,4 @@
-package chance
+package conditional
 
 import (
 	"rhino-bot/behavior"
@@ -6,10 +6,10 @@ import (
 	"unicode"
 )
 
-type SpongemockCommand struct {
+type SpongemockConditional struct {
 }
 
-func (sc *SpongemockCommand) Handle(message string) (string, error) {
+func (sc *SpongemockConditional) Handle(message string) (string, error) {
 	result := ""
 	currentRule := 50
 	for _, char := range message {
@@ -28,13 +28,13 @@ func (sc *SpongemockCommand) Handle(message string) (string, error) {
 	return result, nil
 }
 
-func (sc *SpongemockCommand) RequiresMod() bool {
+func (sc *SpongemockConditional) RequiresMod() bool {
 	return false
 }
 
-func (sc *SpongemockCommand) ShouldHandle(message string) bool {
+func (sc *SpongemockConditional) ShouldHandle(message string) bool {
 	if strings.Contains(strings.ToLower(message), "silksong") {
 		return true
 	}
-	return behavior.GenerateBool(10)
+	return behavior.GenerateBool(5)
 }

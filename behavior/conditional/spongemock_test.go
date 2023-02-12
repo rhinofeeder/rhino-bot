@@ -1,17 +1,17 @@
-package chance
+package conditional
 
 import "testing"
 
-func TestSpongemockChance_RequiresMod(t *testing.T) {
-	sc := &SpongemockCommand{}
+func TestSpongemockConditional_RequiresMod(t *testing.T) {
+	sc := &SpongemockConditional{}
 
 	if result := sc.RequiresMod(); result != false {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
 
-func TestSpongemockChance_ShouldHandle(t *testing.T) {
-	sc := &SpongemockCommand{}
+func TestSpongemockConditional_ShouldHandle(t *testing.T) {
+	sc := &SpongemockConditional{}
 
 	if result := sc.ShouldHandle("Will you play Silksong?"); result != true {
 		t.Errorf("ShouldHandle(message) = %v, want %v", result, true)

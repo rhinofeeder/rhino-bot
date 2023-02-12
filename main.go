@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"os"
 	"rhino-bot/behavior"
-	"rhino-bot/behavior/chance"
 	"rhino-bot/behavior/command"
+	"rhino-bot/behavior/conditional"
 	"rhino-bot/behavior/timer"
 	"rhino-bot/bot"
 	"time"
@@ -30,8 +30,8 @@ var timers = []behavior.Timer{
 	&timer.Discord{},
 }
 
-var chances = []behavior.Chance{
-	&chance.SpongemockCommand{},
+var conditionals = []behavior.Conditional{
+	&conditional.SpongemockConditional{},
 }
 
 func main() {
@@ -47,6 +47,6 @@ func main() {
 	}
 	rhinoBot.RegisterCommands(commands...)
 	rhinoBot.RegisterTimers(timers...)
-	rhinoBot.RegisterChances(chances...)
+	rhinoBot.RegisterConditionals(conditionals...)
 	rhinoBot.Start()
 }

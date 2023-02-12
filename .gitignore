@@ -1,6 +1,7 @@
 .idea
 .vscode
 *.iml
+*.exe
 
 private
 persistence
