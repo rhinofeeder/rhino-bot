@@ -27,9 +27,6 @@ func (sc *ScamCommand) Handle(msg string) (string, error) {
 	for i, word := range msgWords {
 		msgRune := []rune(word)
 		msgRune[0] = unicode.ToUpper(msgRune[0])
-		if i == 0 && !unicode.IsLetter(msgRune[0]) {
-			return "", nil
-		}
 		msgWords[i] = string(msgRune)
 	}
 

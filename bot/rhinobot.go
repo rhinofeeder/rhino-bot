@@ -17,6 +17,7 @@ const (
 	Format  = "Jan 2 15:04:05"
 	PingMsg = "PING :tmi.twitch.tv"
 	PongMsg = "PONG :tmi.twitch.tv\r\n"
+	OopsMsg = "Oops, there was an issue!"
 )
 
 var (
@@ -57,8 +58,8 @@ func (rb *RhinoBot) RegisterTimers(timers ...behavior.Timer) {
 				if err != nil {
 					fmt.Printf("There was an error registering timer: %v\n", err)
 				}
-				sayErr := rb.Say(result)
-				if sayErr != nil {
+
+				if sayErr := rb.Say(result); sayErr != nil {
 					fmt.Printf("Error in Say(): %v\n", sayErr)
 				}
 			}
@@ -100,6 +101,16 @@ func (rb *RhinoBot) Disconnect() {
 	fmt.Printf("[%s] Closed connection from %s! | Live for: %fs\n", timeStamp(), rb.Server, upTime)
 }
 
+func detectInjection(input string) bool {
+	if input == "" {
+		return false
+	}
+	if input[0] == '/' || input[0] == '.' {
+		return true
+	}
+	return false
+}
+
 func (rb *RhinoBot) HandleChat() error {
 	fmt.Printf("[%s] Watching #%s...\n", timeStamp(), rb.Channel)
 
@@ -123,18 +134,25 @@ func (rb *RhinoBot) HandleChat() error {
 
 				if msgType == "PRIVMSG" {
 					msg := matches[4]
-
 					cmdMatches := CmdRegex.FindStringSubmatch(msg)
 					if cmdMatches != nil {
 						cmd := cmdMatches[1]
+						cmdInput := cmdMatches[2]
+
+						if detectInjection(cmdInput) {
+							if sayErr := rb.Say("Nice try"); sayErr != nil {
+								fmt.Printf("Error in Say(): %v\n", sayErr)
+							}
+							continue
+						}
 
 						if registeredCommand := rb.commands[cmd]; registeredCommand != nil {
 							if registeredCommand.RequiresMod() {
 								if strings.Contains(badges, "broadcaster") || strings.Contains(badges, "moderator") {
-									rb.handleCommand(registeredCommand, cmdMatches[2])
+									rb.handleCommand(registeredCommand, cmdInput)
 								}
 							} else {
-								rb.handleCommand(registeredCommand, cmdMatches[2])
+								rb.handleCommand(registeredCommand, cmdInput)
 							}
 						}
 						if cmd == "commands" {
@@ -145,9 +163,8 @@ func (rb *RhinoBot) HandleChat() error {
 
 							err = rb.Say(strings.Join(commandNames, ", "))
 							if err != nil {
-								sayErr := rb.Say("Oops, there was an issue!")
 								fmt.Printf("Error: %v\n", err)
-								if sayErr != nil {
+								if sayErr := rb.Say(OopsMsg); sayErr != nil {
 									fmt.Printf("Error in Say(): %v\n", sayErr)
 								}
 							}
@@ -158,9 +175,8 @@ func (rb *RhinoBot) HandleChat() error {
 								response, _ := conditional.Handle(msg)
 								err = rb.Say(response)
 								if err != nil {
-									sayErr := rb.Say("Oops, there was an issue!")
 									fmt.Printf("Error: %v\n", err)
-									if sayErr != nil {
+									if sayErr := rb.Say(OopsMsg); sayErr != nil {
 										fmt.Printf("Error in Say(): %v\n", sayErr)
 									}
 								}
@@ -183,8 +199,8 @@ func (rb *RhinoBot) handleCommand(registeredCommand behavior.Command, message st
 
 	var sayErr error
 	if response, err := registeredCommand.Handle(message); err != nil {
-		sayErr = rb.Say("Oops, there was an issue!")
 		fmt.Printf("Error: %v\n", err)
+		sayErr = rb.Say(OopsMsg)
 	} else {
 		sayErr = rb.Say(response)
 	}

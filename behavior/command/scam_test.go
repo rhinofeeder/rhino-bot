@@ -23,12 +23,12 @@ func TestScamCommand_Handle(t *testing.T) {
 		{
 			name: "Invalid message single word",
 			msg:  "!foo",
-			want: "",
+			want: "!foo is a scam created by Big !foo to sell more !foo",
 		},
 		{
 			name: "Invalid message multiple words",
 			msg:  "!foo bar",
-			want: "",
+			want: "!foo bar is a scam created by Big !foo Bar to sell more !foo bar",
 		},
 		{
 			name: "Valid message",
