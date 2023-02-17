@@ -81,7 +81,7 @@ func TestSoCommand_Name(t *testing.T) {
 func TestSoCommand_RequiresMod(t *testing.T) {
 	sc := &SoCommand{}
 
-	if result := sc.RequiresMod(); result != true {
+	if result := sc.RequiresMod(); !result {
 		t.Errorf("RequiresMod() = %v, want %v", result, true)
 	}
 }

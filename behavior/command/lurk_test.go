@@ -25,7 +25,7 @@ func TestLurkCommand_Name(t *testing.T) {
 func TestLurkCommand_RequiresMod(t *testing.T) {
 	lc := &LurkCommand{}
 
-	if result := lc.RequiresMod(); result != false {
+	if result := lc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

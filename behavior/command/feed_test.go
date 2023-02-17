@@ -72,7 +72,7 @@ func TestFeedCommand_Name(t *testing.T) {
 func TestFeedCommand_RequiresMod(t *testing.T) {
 	fc := &FeedCommand{}
 
-	if result := fc.RequiresMod(); result != false {
+	if result := fc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

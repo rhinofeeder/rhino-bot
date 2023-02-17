@@ -76,7 +76,7 @@ func TestOoooCommand_Name(t *testing.T) {
 func TestOoooCommand_RequiresMod(t *testing.T) {
 	oc := &OoooCommand{}
 
-	if result := oc.RequiresMod(); result != false {
+	if result := oc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

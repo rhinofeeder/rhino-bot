@@ -22,7 +22,7 @@ func TestStratPlsCommand_Name(t *testing.T) {
 func TestStratPlsCommand_RequiresMod(t *testing.T) {
 	sc := &StratPlsCommand{}
 
-	if result := sc.RequiresMod(); result != false {
+	if result := sc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

@@ -25,7 +25,7 @@ func TestDiscordCommand_Name(t *testing.T) {
 func TestDiscordCommand_RequiresMod(t *testing.T) {
 	dc := &DiscordCommand{}
 
-	if result := dc.RequiresMod(); result != false {
+	if result := dc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

@@ -23,7 +23,7 @@ func TestNameCommand_Name(t *testing.T) {
 func TestNameCommand_RequiresMod(t *testing.T) {
 	nc := &NameCommand{}
 
-	if result := nc.RequiresMod(); result != false {
+	if result := nc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

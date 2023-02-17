@@ -23,7 +23,7 @@ func TestTwitterCommand_Name(t *testing.T) {
 func TestTwitterCommand_RequiresMod(t *testing.T) {
 	tc := &TwitterCommand{}
 
-	if result := tc.RequiresMod(); result != false {
+	if result := tc.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }

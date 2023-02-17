@@ -23,7 +23,7 @@ func TestYtCommand_Name(t *testing.T) {
 func TestYtCommand_RequiresMod(t *testing.T) {
 	yt := &YtCommand{}
 
-	if result := yt.RequiresMod(); result != false {
+	if result := yt.RequiresMod(); result {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
