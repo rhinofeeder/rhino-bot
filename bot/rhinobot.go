@@ -114,6 +114,10 @@ func detectInjection(input string) bool {
 func (rb *RhinoBot) HandleChat() error {
 	fmt.Printf("[%s] Watching #%s...\n", timeStamp(), rb.Channel)
 
+	if sayErr := rb.Say("rhinof1Hi"); sayErr != nil {
+		fmt.Printf("Error in Say(): %v\n", sayErr)
+	}
+
 	tp := textproto.NewReader(bufio.NewReader(rb.conn))
 	for {
 		line, err := tp.ReadLine()
