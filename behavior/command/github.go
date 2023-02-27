@@ -10,7 +10,7 @@ func (gc *GitHubCommand) Name() string {
 	return "github"
 }
 
-func (gc *GitHubCommand) Handle(_ string) (string, error) {
+func (gc *GitHubCommand) Handle(string) (string, error) {
 	gc.lastCalled = time.Now()
 	return "/me https://github.com/rhinofeeder/rhino-bot", nil
 }

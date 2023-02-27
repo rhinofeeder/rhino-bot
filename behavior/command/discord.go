@@ -10,7 +10,7 @@ func (dc *DiscordCommand) Name() string {
 	return "discord"
 }
 
-func (dc *DiscordCommand) Handle(_ string) (string, error) {
+func (dc *DiscordCommand) Handle(string) (string, error) {
 	dc.lastCalled = time.Now()
 	return "/me https://discord.com/invite/mrzNnq6", nil
 }

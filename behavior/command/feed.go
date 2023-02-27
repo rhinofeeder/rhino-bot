@@ -21,7 +21,7 @@ func (fc *FeedCommand) Name() string {
 	return "feed"
 }
 
-func (fc *FeedCommand) Handle(_ string) (string, error) {
+func (fc *FeedCommand) Handle(string) (string, error) {
 	fc.lastCalled = time.Now()
 
 	file, err := fc.ReadFile(filePath)

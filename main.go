@@ -18,6 +18,7 @@ var commands = []behavior.Command{
 		WriteFile: os.WriteFile,
 	},
 	&command.GitHubCommand{},
+	&command.GuysCommand{},
 	&command.LurkCommand{},
 	&command.NameCommand{},
 	&command.OoooCommand{},

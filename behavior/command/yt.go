@@ -10,7 +10,7 @@ func (yt *YtCommand) Name() string {
 	return "yt"
 }
 
-func (yt *YtCommand) Handle(_ string) (string, error) {
+func (yt *YtCommand) Handle(string) (string, error) {
 	yt.lastCalled = time.Now()
 	return "/me https://www.youtube.com/channel/UCXs2LBSCBb2gPhqka9HKdmg", nil
 }

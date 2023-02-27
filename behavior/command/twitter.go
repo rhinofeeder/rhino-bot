@@ -10,7 +10,7 @@ func (tc *TwitterCommand) Name() string {
 	return "twitter"
 }
 
-func (tc *TwitterCommand) Handle(_ string) (string, error) {
+func (tc *TwitterCommand) Handle(string) (string, error) {
 	tc.lastCalled = time.Now()
 	return "/me https://twitter.com/RhinoFeeder", nil
 }
