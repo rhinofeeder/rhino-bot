@@ -30,7 +30,7 @@ var commands = []behavior.Command{
 }
 
 var timers = []behavior.Timer{
-	&timer.Discord{},
+	&timer.DiscordTimer{},
 }
 
 var conditionals = []behavior.Conditional{

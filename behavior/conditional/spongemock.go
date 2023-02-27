@@ -28,10 +28,6 @@ func (sc *SpongemockConditional) Handle(message string) (string, error) {
 	return result, nil
 }
 
-func (sc *SpongemockConditional) RequiresMod() bool {
-	return false
-}
-
 func (sc *SpongemockConditional) ShouldHandle(message string) bool {
 	if strings.Contains(strings.ToLower(message), "silksong") {
 		return true

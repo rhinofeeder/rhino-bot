@@ -4,21 +4,13 @@ import (
 	"time"
 )
 
-type Discord struct {
+type DiscordTimer struct {
 }
 
-func (d *Discord) Name() string {
-	return "discord"
-}
-
-func (d *Discord) Handle(message string) (string, error) {
+func (dt *DiscordTimer) Handle(string) (string, error) {
 	return "/me https://discord.com/invite/mrzNnq6", nil
 }
 
-func (d *Discord) RequiresMod() bool {
-	return false
-}
-
-func (d *Discord) Duration() time.Duration {
+func (dt *DiscordTimer) Duration() time.Duration {
 	return 15 * time.Minute
 }
