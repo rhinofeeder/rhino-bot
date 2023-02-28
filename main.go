@@ -35,6 +35,7 @@ var timers = []behavior.Timer{
 
 var conditionals = []behavior.Conditional{
 	&conditional.SpongemockConditional{},
+	&conditional.WhatsupConditional{},
 }
 
 func main() {
