@@ -1,6 +1,7 @@
 package conditional
 
 import (
+	"errors"
 	"fmt"
 	"rhino-bot/behavior"
 	"rhino-bot/utils"
@@ -23,8 +24,13 @@ func findUpWord(message string) string {
 	return ""
 }
 
-func (wc *WhatsupConditional) Handle(message string) (string, error) {
-	return fmt.Sprintf("What's %v?", wc.upWord), nil
+func (wc *WhatsupConditional) Handle(string) (string, error) {
+	if wc.upWord == "" {
+		return "", errors.New("WhatsupConditional Handle called with no word")
+	}
+	result := fmt.Sprintf("What's %v?", wc.upWord)
+	wc.upWord = ""
+	return result, nil
 }
 
 func (wc *WhatsupConditional) ShouldHandle(message string) bool {
