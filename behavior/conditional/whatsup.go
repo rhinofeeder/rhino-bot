@@ -3,6 +3,7 @@ package conditional
 import (
 	"fmt"
 	"rhino-bot/behavior"
+	"rhino-bot/utils"
 	"strings"
 )
 
@@ -11,13 +12,11 @@ type WhatsupConditional struct {
 }
 
 func findUpWord(message string) string {
-	replacer := strings.NewReplacer(",", "", ".", "", ";", "", "?", "", "!", "")
-	replacedMessage := replacer.Replace(message)
-	words := strings.Fields(replacedMessage)
+	words := strings.Fields(message)
 
 	for _, word := range words {
 		if strings.HasPrefix(word, "up") && word != "up" {
-			return word
+			return utils.StripNonLetters(word)
 		}
 	}
 
