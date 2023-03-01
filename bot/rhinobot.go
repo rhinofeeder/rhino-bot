@@ -175,8 +175,8 @@ func (rb *RhinoBot) HandleChat() error {
 						}
 					} else {
 						for _, conditional := range rb.conditionals {
-							if conditional.ShouldHandle(msg) {
-								response, _ := conditional.Handle(msg)
+							response, _ := conditional.Handle(msg)
+							if response != "" {
 								err = rb.Say(response)
 								if err != nil {
 									fmt.Printf("Error: %v\n", err)
