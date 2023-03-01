@@ -9,7 +9,7 @@ import (
 type SpongemockConditional struct {
 }
 
-func (sc *SpongemockConditional) Handle(message string) (string, error) {
+func spongemockMessage(message string) (string, error) {
 	result := ""
 	currentRule := 50
 	for _, char := range message {
@@ -28,9 +28,14 @@ func (sc *SpongemockConditional) Handle(message string) (string, error) {
 	return result, nil
 }
 
-func (sc *SpongemockConditional) ShouldHandle(message string) bool {
+func (sc *SpongemockConditional) Handle(message string) (string, error) {
 	if strings.Contains(strings.ToLower(message), "silksong") {
-		return true
+		return spongemockMessage(message)
 	}
-	return behavior.GenerateBool(5)
+
+	if behavior.GenerateBool(5) {
+		return spongemockMessage(message)
+	}
+
+	return "", nil
 }

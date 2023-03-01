@@ -6,7 +6,6 @@ import (
 
 type Conditional interface {
 	Behavior
-	ShouldHandle(message string) bool
 }
 
 // GenerateBool generates a random boolean with a `chance` percent likelihood to return true.
