@@ -14,8 +14,9 @@ func findUpWord(message string) string {
 	words := strings.Fields(message)
 
 	for _, word := range words {
-		if strings.HasPrefix(word, "up") && word != "up" {
-			return utils.StripNonLetters(word)
+		strippedWord := utils.StripNonLetters(word)
+		if strings.HasPrefix(word, "up") && len(strippedWord) > 3 {
+			return strippedWord
 		}
 	}
 
