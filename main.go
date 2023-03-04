@@ -34,6 +34,7 @@ var timers = []behavior.Timer{
 }
 
 var conditionals = []behavior.Conditional{
+	&conditional.DadConditional{},
 	&conditional.SpongemockConditional{},
 	&conditional.WhatsupConditional{},
 }
