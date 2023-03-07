@@ -22,3 +22,7 @@ func (yt *YtCommand) RequiresMod() bool {
 func (yt *YtCommand) OnCooldown() bool {
 	return !yt.lastCalled.IsZero() && time.Since(yt.lastCalled) < 5*time.Second
 }
+
+func (yt *YtCommand) Help() string {
+	return "Prints a link to the RhinoFeeder YouTube channel."
+}

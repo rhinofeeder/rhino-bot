@@ -27,3 +27,12 @@ func TestYtCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestYtCommand_Help(t *testing.T) {
+	yt := &YtCommand{}
+	expected := "Prints a link to the RhinoFeeder YouTube channel."
+
+	if result := yt.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

@@ -45,3 +45,7 @@ func (fc *FeedCommand) RequiresMod() bool {
 func (fc *FeedCommand) OnCooldown() bool {
 	return !fc.lastCalled.IsZero() && time.Since(fc.lastCalled) < 5*time.Second
 }
+
+func (fc *FeedCommand) Help() string {
+	return "Increments the number of rhinos fed by the community."
+}

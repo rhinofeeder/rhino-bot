@@ -32,3 +32,7 @@ func (sc *SoCommand) RequiresMod() bool {
 func (sc *SoCommand) OnCooldown() bool {
 	return !sc.lastCalled.IsZero() && time.Since(sc.lastCalled) < 5*time.Second
 }
+
+func (sc *SoCommand) Help() string {
+	return "Mods only. Takes an input of another user's Twitch handle and gives them a text shout out in chat."
+}

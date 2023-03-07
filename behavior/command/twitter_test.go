@@ -27,3 +27,12 @@ func TestTwitterCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestTwitterCommand_Help(t *testing.T) {
+	tc := &TwitterCommand{}
+	expected := "Prints a link to the RhinoFeeder twitter account."
+
+	if result := tc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

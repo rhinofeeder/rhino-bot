@@ -158,8 +158,7 @@ func (rb *RhinoBot) HandleChat() error {
 							} else {
 								rb.handleCommand(registeredCommand, cmdInput)
 							}
-						}
-						if cmd == "commands" {
+						} else if cmd == "commands" {
 							commandNames := make([]string, 0, len(rb.commands))
 							for commandName := range rb.commands {
 								commandNames = append(commandNames, "!"+commandName)

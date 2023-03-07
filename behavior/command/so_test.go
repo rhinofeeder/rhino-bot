@@ -85,3 +85,12 @@ func TestSoCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, true)
 	}
 }
+
+func TestSoCommand_Help(t *testing.T) {
+	sc := &SoCommand{}
+	expected := "Mods only. Takes an input of another user's Twitch handle and gives them a text shout out in chat."
+
+	if result := sc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

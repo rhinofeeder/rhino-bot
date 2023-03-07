@@ -29,3 +29,12 @@ func TestDiscordCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestDiscordCommand_Help(t *testing.T) {
+	dc := &DiscordCommand{}
+	expected := "Prints a permanent link to join the RhinoFeeder Discord server."
+
+	if result := dc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

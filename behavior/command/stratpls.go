@@ -90,3 +90,7 @@ func (spc *StratPlsCommand) RequiresMod() bool {
 func (spc *StratPlsCommand) OnCooldown() bool {
 	return !spc.lastCalled.IsZero() && time.Since(spc.lastCalled) < 5*time.Second
 }
+
+func (spc *StratPlsCommand) Help() string {
+	return "Prints out a random strat to perform."
+}

@@ -22,3 +22,7 @@ func (tc *TwitterCommand) RequiresMod() bool {
 func (tc *TwitterCommand) OnCooldown() bool {
 	return !tc.lastCalled.IsZero() && time.Since(tc.lastCalled) < 5*time.Second
 }
+
+func (tc *TwitterCommand) Help() string {
+	return "Prints a link to the RhinoFeeder twitter account."
+}

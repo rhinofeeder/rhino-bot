@@ -87,3 +87,7 @@ func (oc *OoooCommand) RequiresMod() bool {
 func (oc *OoooCommand) OnCooldown() bool {
 	return !oc.lastCalled.IsZero() && time.Since(oc.lastCalled) < 5*time.Second
 }
+
+func (oc *OoooCommand) Help() string {
+	return "Takes in a string and replaces any 'o' or 'O' characters with the OOOO emote. If no 'o' or 'O' exists, then it will choose the vowel that is closest to the middle of the string."
+}

@@ -76,3 +76,12 @@ func TestScamCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestScamCommand_Help(t *testing.T) {
+	sc := &ScamCommand{}
+	expected := "Takes an input and prints a message in the following format: \"[input] is a scam created by Big [input] to sell more [input].\""
+
+	if result := sc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

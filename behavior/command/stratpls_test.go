@@ -26,3 +26,12 @@ func TestStratPlsCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestStratPlsCommand_Help(t *testing.T) {
+	sc := &StratPlsCommand{}
+	expected := "Prints out a random strat to perform."
+
+	if result := sc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

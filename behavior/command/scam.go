@@ -40,3 +40,7 @@ func (sc *ScamCommand) RequiresMod() bool {
 func (sc *ScamCommand) OnCooldown() bool {
 	return !sc.lastCalled.IsZero() && time.Since(sc.lastCalled) < 5*time.Second
 }
+
+func (sc *ScamCommand) Help() string {
+	return "Takes an input and prints a message in the following format: \"[input] is a scam created by Big [input] to sell more [input].\""
+}

@@ -28,3 +28,12 @@ func TestGitHubCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestGitHubCommand_Help(t *testing.T) {
+	gc := &GitHubCommand{}
+	expected := "Prints out a link to the rhino-bot source code on GitHub."
+
+	if result := gc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

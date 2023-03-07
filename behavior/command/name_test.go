@@ -27,3 +27,12 @@ func TestNameCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestNameCommand_Help(t *testing.T) {
+	nc := &NameCommand{}
+	expected := "Prints a timestamped link to where the name 'RhinoFeeder' comes from."
+
+	if result := nc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

@@ -22,3 +22,7 @@ func (gc *GitHubCommand) RequiresMod() bool {
 func (gc *GitHubCommand) OnCooldown() bool {
 	return !gc.lastCalled.IsZero() && time.Since(gc.lastCalled) < 5*time.Second
 }
+
+func (gc *GitHubCommand) Help() string {
+	return "Prints out a link to the rhino-bot source code on GitHub."
+}

@@ -80,3 +80,12 @@ func TestOoooCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestOoooCommand_Help(t *testing.T) {
+	oc := &OoooCommand{}
+	expected := "Takes in a string and replaces any 'o' or 'O' characters with the OOOO emote. If no 'o' or 'O' exists, then it will choose the vowel that is closest to the middle of the string."
+
+	if result := oc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

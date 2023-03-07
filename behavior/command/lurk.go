@@ -22,3 +22,7 @@ func (lc *LurkCommand) Name() string {
 func (lc *LurkCommand) OnCooldown() bool {
 	return !lc.lastCalled.IsZero() && time.Since(lc.lastCalled) < 5*time.Second
 }
+
+func (lc *LurkCommand) Help() string {
+	return "Tells the chat that you'll be lurking."
+}

@@ -76,3 +76,12 @@ func TestFeedCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestFeedCommand_Help(t *testing.T) {
+	dc := &FeedCommand{}
+	expected := "Increments the number of rhinos fed by the community."
+
+	if result := dc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

@@ -5,4 +5,5 @@ type Command interface {
 	Name() string
 	RequiresMod() bool
 	OnCooldown() bool
+	Help() string
 }

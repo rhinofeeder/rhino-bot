@@ -29,3 +29,12 @@ func TestLurkCommand_RequiresMod(t *testing.T) {
 		t.Errorf("RequiresMod() = %v, want %v", result, false)
 	}
 }
+
+func TestLurkCommand_Help(t *testing.T) {
+	lc := &LurkCommand{}
+	expected := "Tells the chat that you'll be lurking."
+
+	if result := lc.Help(); result != expected {
+		t.Errorf("Handle() = %v, want %v", result, expected)
+	}
+}

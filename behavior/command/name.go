@@ -22,3 +22,7 @@ func (nc *NameCommand) RequiresMod() bool {
 func (nc *NameCommand) OnCooldown() bool {
 	return !nc.lastCalled.IsZero() && time.Since(nc.lastCalled) < 5*time.Second
 }
+
+func (nc *NameCommand) Help() string {
+	return "Prints a timestamped link to where the name 'RhinoFeeder' comes from."
+}

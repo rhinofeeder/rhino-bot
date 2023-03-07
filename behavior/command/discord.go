@@ -1,6 +1,8 @@
 package command
 
-import "time"
+import (
+	"time"
+)
 
 type DiscordCommand struct {
 	lastCalled time.Time
@@ -21,4 +23,8 @@ func (dc *DiscordCommand) RequiresMod() bool {
 
 func (dc *DiscordCommand) OnCooldown() bool {
 	return !dc.lastCalled.IsZero() && time.Since(dc.lastCalled) < 5*time.Second
+}
+
+func (dc *DiscordCommand) Help() string {
+	return "Prints a permanent link to join the RhinoFeeder Discord server."
 }
