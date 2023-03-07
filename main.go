@@ -38,10 +38,12 @@ var conditionals = []behavior.Conditional{
 	&conditional.WhatsupConditional{},
 }
 
+var rhinoBot bot.RhinoBot
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	rhinoBot := bot.RhinoBot{
+	rhinoBot = bot.RhinoBot{
 		Channel:     "rhinofeeder",
 		MsgRate:     time.Duration(30/100) * time.Millisecond,
 		Name:        "RhinoFeederBot",
@@ -53,4 +55,8 @@ func main() {
 	rhinoBot.RegisterTimers(timers...)
 	rhinoBot.RegisterConditionals(conditionals...)
 	rhinoBot.Start()
+}
+
+func GetRhinoBot() bot.RhinoBot {
+	return rhinoBot
 }
