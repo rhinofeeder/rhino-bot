@@ -75,10 +75,11 @@ by chatters with moderator privileges. The syntax for triggering a command is `!
 Start by creating a new file at `behavior/command/<command_name>.go`. Create a struct to represent your command. Use the
 naming convention `<Command>Command` for your struct. Commands must implement the following functions:
 
-- `Name() string` - returns the string that chatters will use to trigger it. For example, a command whose `Name`
+- `Name() string` - Returns the string that chatters will use to trigger it. For example, a command whose `Name`
   function returns "foo" will be triggered in chat with `!foo`.
 - `RequiresMod() bool` - Returns whether a command requires a moderator to trigger it.
 - `OnCooldown() bool` - Returns whether the command is on cooldown or not.
+- `Help() string` - Returns a string explaining what the command does and/or how to use it
 
 Write a few basic tests for any logic or functionality in your command.
 
