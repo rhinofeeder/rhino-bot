@@ -16,6 +16,7 @@ var commands = []behavior.Command{
 	&command.DiscordCommand{},
 	&command.FeedCommand{ReadFileFunc: os.ReadFile, WriteFileFunc: os.WriteFile},
 	&command.GitHubCommand{},
+	&command.HelpCommand{GetRhinoBotFunc: singleton.GetRhinoBot},
 	&command.LurkCommand{},
 	&command.NameCommand{},
 	&command.OoooCommand{},
