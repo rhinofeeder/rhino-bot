@@ -12,9 +12,9 @@ const (
 )
 
 type FeedCommand struct {
-	ReadFile   func(name string) ([]byte, error)
-	WriteFile  func(name string, data []byte, perm os.FileMode) error
-	lastCalled time.Time
+	ReadFileFunc  func(name string) ([]byte, error)
+	WriteFileFunc func(name string, data []byte, perm os.FileMode) error
+	lastCalled    time.Time
 }
 
 func (fc *FeedCommand) Name() string {
@@ -24,7 +24,7 @@ func (fc *FeedCommand) Name() string {
 func (fc *FeedCommand) Handle(string) (string, error) {
 	fc.lastCalled = time.Now()
 
-	file, err := fc.ReadFile(filePath)
+	file, err := fc.ReadFileFunc(filePath)
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +32,7 @@ func (fc *FeedCommand) Handle(string) (string, error) {
 	rhinosFed, _ := strconv.Atoi(string(file))
 	rhinosFed++
 
-	if err = fc.WriteFile(filePath, []byte(strconv.Itoa(rhinosFed)), 0644); err != nil {
+	if err = fc.WriteFileFunc(filePath, []byte(strconv.Itoa(rhinosFed)), 0644); err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("Rhinos fed: %v", rhinosFed), nil

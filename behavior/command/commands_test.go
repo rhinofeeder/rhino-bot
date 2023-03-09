@@ -1,36 +1,45 @@
 package command
 
 import (
+	"rhino-bot/behavior"
+	"rhino-bot/bot"
 	"testing"
-	"time"
 )
 
 func TestCommandsCommand_Handle(t *testing.T) {
-	type fields struct {
-		lastCalled time.Time
-	}
-	type args struct {
-		message string
-	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    string
-		wantErr bool
+		name     string
+		commands map[string]behavior.Command
+		message  string
+		want     string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "No registered commands",
+		},
+		{
+			name:     "One registered command",
+			commands: map[string]behavior.Command{"foo": nil},
+			want:     "!foo",
+		},
+		{
+			name:     "Multiple registered commands ordered",
+			commands: map[string]behavior.Command{"bar": nil, "foo": nil},
+			want:     "!bar, !foo",
+		},
+		{
+			name:     "Multiple registered commands unordered",
+			commands: map[string]behavior.Command{"foo": nil, "bar": nil},
+			want:     "!bar, !foo",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cc := &CommandsCommand{
-				lastCalled: tt.fields.lastCalled,
+				GetRhinoBotFunc: func() *bot.RhinoBot {
+					return &bot.RhinoBot{Commands: tt.commands}
+				},
 			}
-			got, err := cc.Handle(tt.args.message)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Handle() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got, _ := cc.Handle(tt.message)
 			if got != tt.want {
 				t.Errorf("Handle() got = %v, want %v", got, tt.want)
 			}

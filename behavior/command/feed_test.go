@@ -45,8 +45,8 @@ func TestFeedCommand_Handle(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			fc := FeedCommand{
-				ReadFile:  tt.readFile,
-				WriteFile: tt.writeFile,
+				ReadFileFunc:  tt.readFile,
+				WriteFileFunc: tt.writeFile,
 			}
 			got, err := fc.Handle("")
 			if (err != nil) != tt.wantErr {

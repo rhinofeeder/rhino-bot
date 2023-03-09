@@ -1,16 +1,29 @@
 package command
 
-import "time"
+import (
+	"rhino-bot/bot"
+	"sort"
+	"strings"
+	"time"
+)
 
 type CommandsCommand struct {
-	lastCalled time.Time
+	lastCalled      time.Time
+	GetRhinoBotFunc func() *bot.RhinoBot
 }
 
-func (cc *CommandsCommand) Handle(message string) (string, error) {
+func (cc *CommandsCommand) Handle(string) (string, error) {
 	cc.lastCalled = time.Now()
 
-	// TODO
-	panic("implement me")
+	registeredCommands := cc.GetRhinoBotFunc().Commands
+	commandNames := make([]string, 0, len(registeredCommands))
+	for commandName := range registeredCommands {
+		commandNames = append(commandNames, "!"+commandName)
+	}
+
+	sort.Strings(commandNames)
+
+	return strings.Join(commandNames, ", "), nil
 }
 
 func (cc *CommandsCommand) Name() string {

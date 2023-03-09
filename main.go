@@ -7,16 +7,14 @@ import (
 	"rhino-bot/behavior/command"
 	"rhino-bot/behavior/conditional"
 	"rhino-bot/behavior/timer"
-	"rhino-bot/bot"
+	"rhino-bot/singleton"
 	"time"
 )
 
 var commands = []behavior.Command{
+	&command.CommandsCommand{GetRhinoBotFunc: singleton.GetRhinoBot},
 	&command.DiscordCommand{},
-	&command.FeedCommand{
-		ReadFile:  os.ReadFile,
-		WriteFile: os.WriteFile,
-	},
+	&command.FeedCommand{ReadFileFunc: os.ReadFile, WriteFileFunc: os.WriteFile},
 	&command.GitHubCommand{},
 	&command.LurkCommand{},
 	&command.NameCommand{},
@@ -38,25 +36,13 @@ var conditionals = []behavior.Conditional{
 	&conditional.WhatsupConditional{},
 }
 
-var rhinoBot bot.RhinoBot
-
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	rhinoBot = bot.RhinoBot{
-		Channel:     "rhinofeeder",
-		MsgRate:     time.Duration(30/100) * time.Millisecond,
-		Name:        "RhinoFeederBot",
-		Port:        "6667",
-		PrivatePath: "./private/oauth",
-		Server:      "irc.chat.twitch.tv",
-	}
+	rhinoBot := singleton.NewRhinoBot()
+
 	rhinoBot.RegisterCommands(commands...)
 	rhinoBot.RegisterTimers(timers...)
 	rhinoBot.RegisterConditionals(conditionals...)
 	rhinoBot.Start()
-}
-
-func GetRhinoBot() bot.RhinoBot {
-	return rhinoBot
 }

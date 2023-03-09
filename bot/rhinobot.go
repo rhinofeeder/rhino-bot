@@ -32,7 +32,7 @@ type RhinoBot struct {
 	Port         string
 	PrivatePath  string
 	Server       string
-	commands     map[string]behavior.Command
+	Commands     map[string]behavior.Command
 	conditionals []behavior.Conditional
 	conn         net.Conn
 	startTime    time.Time
@@ -41,10 +41,10 @@ type RhinoBot struct {
 
 func (rb *RhinoBot) RegisterCommands(commands ...behavior.Command) {
 	for _, command := range commands {
-		if rb.commands == nil {
-			rb.commands = make(map[string]behavior.Command, len(commands))
+		if rb.Commands == nil {
+			rb.Commands = make(map[string]behavior.Command, len(commands))
 		}
-		rb.commands[command.Name()] = command
+		rb.Commands[command.Name()] = command
 	}
 }
 
@@ -150,26 +150,13 @@ func (rb *RhinoBot) HandleChat() error {
 							continue
 						}
 
-						if registeredCommand := rb.commands[cmd]; registeredCommand != nil {
+						if registeredCommand := rb.Commands[cmd]; registeredCommand != nil {
 							if registeredCommand.RequiresMod() {
 								if strings.Contains(badges, "broadcaster") || strings.Contains(badges, "moderator") {
 									rb.handleCommand(registeredCommand, cmdInput)
 								}
 							} else {
 								rb.handleCommand(registeredCommand, cmdInput)
-							}
-						} else if cmd == "commands" {
-							commandNames := make([]string, 0, len(rb.commands))
-							for commandName := range rb.commands {
-								commandNames = append(commandNames, "!"+commandName)
-							}
-
-							err = rb.Say(strings.Join(commandNames, ", "))
-							if err != nil {
-								fmt.Printf("Error: %v\n", err)
-								if sayErr := rb.Say(OopsMsg); sayErr != nil {
-									fmt.Printf("Error in Say(): %v\n", sayErr)
-								}
 							}
 						}
 					} else {
