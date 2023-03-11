@@ -1,20 +1,20 @@
 package conditional
 
 import (
-	"rhino-bot/behavior"
 	"strings"
 	"unicode"
 )
 
 type SpongemockConditional struct {
+	RngFunc func(int) bool
 }
 
-func spongemockMessage(message string) (string, error) {
+func (sc *SpongemockConditional) spongemockMessage(message string) (string, error) {
 	result := ""
 	currentRule := 50
 	for _, char := range message {
 		if unicode.IsLetter(char) {
-			if behavior.GenerateBool(currentRule) {
+			if sc.RngFunc(currentRule) {
 				result += string(unicode.ToUpper(char))
 				currentRule = 20
 			} else {
@@ -30,11 +30,11 @@ func spongemockMessage(message string) (string, error) {
 
 func (sc *SpongemockConditional) Handle(message string) (string, error) {
 	if strings.Contains(strings.ToLower(message), "silksong") {
-		return spongemockMessage(message)
+		return sc.spongemockMessage(message)
 	}
 
-	if behavior.GenerateBool(5) {
-		return spongemockMessage(message)
+	if sc.RngFunc(5) {
+		return sc.spongemockMessage(message)
 	}
 
 	return "", nil

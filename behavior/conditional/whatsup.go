@@ -2,15 +2,15 @@ package conditional
 
 import (
 	"fmt"
-	"rhino-bot/behavior"
 	"rhino-bot/utils"
 	"strings"
 )
 
 type WhatsupConditional struct {
+	RngFunc func(int) bool
 }
 
-func findUpWord(message string) string {
+func (wc *WhatsupConditional) findUpWord(message string) string {
 	words := strings.Fields(message)
 
 	for _, word := range words {
@@ -24,8 +24,8 @@ func findUpWord(message string) string {
 }
 
 func (wc *WhatsupConditional) Handle(message string) (string, error) {
-	upWord := findUpWord(message)
-	if upWord != "" && behavior.GenerateBool(50) {
+	upWord := wc.findUpWord(message)
+	if upWord != "" && wc.RngFunc(50) {
 		result := fmt.Sprintf("What's %v?", upWord)
 		return result, nil
 	}
