@@ -32,7 +32,7 @@ var timers = []behavior.Timer{
 }
 
 var conditionals = []behavior.Conditional{
-	&conditional.DadConditional{},
+	&conditional.DadConditional{RngFunc: behavior.GenerateBool},
 	&conditional.SpongemockConditional{},
 	&conditional.WhatsupConditional{},
 }
