@@ -14,6 +14,7 @@ import (
 var commands = []behavior.Command{
 	&command.CommandsCommand{GetRhinoBotFunc: singleton.GetRhinoBot},
 	&command.DiscordCommand{},
+	&command.DnCommand{},
 	&command.FeedCommand{ReadFileFunc: os.ReadFile, WriteFileFunc: os.WriteFile},
 	&command.GitHubCommand{},
 	&command.HelpCommand{GetRhinoBotFunc: singleton.GetRhinoBot},
