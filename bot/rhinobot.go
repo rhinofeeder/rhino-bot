@@ -114,10 +114,6 @@ func detectInjection(input string) bool {
 func (rb *RhinoBot) HandleChat() error {
 	fmt.Printf("[%s] Watching #%s...\n", timeStamp(), rb.Channel)
 
-	if sayErr := rb.Say("rhinof1Hi"); sayErr != nil {
-		fmt.Printf("Error in Say(): %v\n", sayErr)
-	}
-
 	tp := textproto.NewReader(bufio.NewReader(rb.conn))
 	for {
 		line, err := tp.ReadLine()
@@ -208,6 +204,10 @@ func (rb *RhinoBot) JoinChannel() {
 	_, _ = rb.conn.Write([]byte("CAP REQ :twitch.tv/tags\r\n"))
 
 	fmt.Printf("[%s] Joined #%s as @%s!\n", timeStamp(), rb.Channel, rb.Name)
+
+	if sayErr := rb.Say("rhinof1Hi"); sayErr != nil {
+		fmt.Printf("Error in Say(): %v\n", sayErr)
+	}
 }
 
 func (rb *RhinoBot) ReadCredentials() error {
