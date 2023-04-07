@@ -14,10 +14,13 @@ import (
 )
 
 const (
-	Format  = "Jan 2 15:04:05"
-	PingMsg = "PING :tmi.twitch.tv"
-	PongMsg = "PONG :tmi.twitch.tv\r\n"
-	OopsMsg = "Oops, there was an issue!"
+	Format          = "Jan 2 15:04:05"
+	PingMsg         = "PING :tmi.twitch.tv"
+	PongMsg         = "PONG :tmi.twitch.tv\r\n"
+	OopsMsg         = "Oops, there was an issue!"
+	TokenPath       = "./private/oauth"
+	TwitchIRCServer = "irc.chat.twitch.tv"
+	TwitchIRCPort   = "6667"
 )
 
 var (
@@ -29,14 +32,10 @@ type RhinoBot struct {
 	Channel      string
 	MsgRate      time.Duration
 	Name         string
-	Port         string
-	PrivatePath  string
-	Server       string
 	Commands     map[string]behavior.Command
 	conditionals []behavior.Conditional
 	conn         net.Conn
 	startTime    time.Time
-	token        string
 }
 
 func (rb *RhinoBot) RegisterCommands(commands ...behavior.Command) {
@@ -59,9 +58,7 @@ func (rb *RhinoBot) RegisterTimers(timers ...behavior.Timer) {
 					fmt.Printf("There was an error registering timer: %v\n", err)
 				}
 
-				if sayErr := rb.Say(result); sayErr != nil {
-					fmt.Printf("Error in Say(): %v\n", sayErr)
-				}
+				rb.sayAndWrapError(result)
 			}
 		}(timer)
 	}
@@ -77,48 +74,103 @@ func (rb *RhinoBot) RegisterConditionals(conditionals ...behavior.Conditional) {
 	}
 }
 
-func (rb *RhinoBot) Connect() {
-	fmt.Printf("[%s] Connecting to %s...\n", timeStamp(), rb.Server)
+func (rb *RhinoBot) Start() {
+	token, err := rb.readCredentials()
+	if nil != err {
+		fmt.Println("Error reading credentials, aborting...", err)
+		return
+	}
+
+	for {
+		rb.connect()
+		rb.joinChannel(token)
+		err = rb.handleChat()
+		if err != nil {
+			// attempts to reconnect upon unexpected chat error
+			time.Sleep(1000 * time.Millisecond)
+			fmt.Println(err)
+			fmt.Println("Starting bot again...")
+		} else {
+			return
+		}
+	}
+}
+
+func (rb *RhinoBot) Stop() {
+	_ = rb.conn.Close()
+	upTime := time.Since(rb.startTime).Seconds()
+	fmt.Printf("[%s] Closed connection from %s! | Live for: %fs\n", timeStamp(), TwitchIRCServer, upTime)
+}
+
+func (rb *RhinoBot) Say(msg string) error {
+	if msg == "" {
+		return errors.New("msg was empty")
+	}
+
+	// check if message is too large for IRC
+	if len(msg) > 512 {
+		return errors.New("msg exceeded 512 bytes")
+	}
+
+	if _, err := rb.conn.Write([]byte(fmt.Sprintf("PRIVMSG #%s :%s\r\n", rb.Channel, msg))); nil != err {
+		return err
+	}
+	return nil
+}
+
+func (rb *RhinoBot) sayAndWrapError(msg string) {
+	if sayErr := rb.Say(msg); sayErr != nil {
+		fmt.Printf("Error in Say(): %v\n", sayErr)
+	}
+}
+
+func (rb *RhinoBot) readCredentials() (string, error) {
+	token, err := os.ReadFile(TokenPath)
+	if err != nil {
+		return "", err
+	}
+
+	return string(token), nil
+}
+
+func (rb *RhinoBot) connect() {
+	fmt.Printf("[%s] Connecting to %s...\n", timeStamp(), "irc.chat.twitch.tv")
 
 	// makes connection to Twitch IRC server
-	connection, err := net.Dial("tcp", rb.Server+":"+rb.Port)
+	connection, err := net.Dial("tcp", TwitchIRCServer+":"+TwitchIRCPort)
 	count := 1
 	for err != nil {
 		count++
-		fmt.Printf("[%s] Cannot connect to %s, retrying (Attempt %v).\n", timeStamp(), rb.Server, count)
-		connection, err = net.Dial("tcp", rb.Server+":"+rb.Port)
+		fmt.Printf("[%s] Cannot connect to %s, retrying (Attempt %v).\n", timeStamp(), TwitchIRCServer, count)
+		connection, err = net.Dial("tcp", TwitchIRCServer+":"+TwitchIRCPort)
 	}
 
 	rb.startTime = time.Now()
 	rb.conn = connection
 
-	fmt.Printf("[%s] Connected to %s!\n", timeStamp(), rb.Server)
+	fmt.Printf("[%s] Connected to %s!\n", timeStamp(), TwitchIRCServer)
 }
 
-func (rb *RhinoBot) Disconnect() {
-	_ = rb.conn.Close()
-	upTime := time.Since(rb.startTime).Seconds()
-	fmt.Printf("[%s] Closed connection from %s! | Live for: %fs\n", timeStamp(), rb.Server, upTime)
+func (rb *RhinoBot) joinChannel(token string) {
+	fmt.Printf("[%s] Joining #%s...\n", timeStamp(), rb.Channel)
+	_, _ = rb.conn.Write([]byte("PASS " + token + "\r\n"))
+	_, _ = rb.conn.Write([]byte("NICK " + rb.Name + "\r\n"))
+	_, _ = rb.conn.Write([]byte("JOIN #" + rb.Channel + "\r\n"))
+	_, _ = rb.conn.Write([]byte("CAP REQ :twitch.tv/tags\r\n"))
+
+	fmt.Printf("[%s] Joined #%s as @%s!\n", timeStamp(), rb.Channel, rb.Name)
+
+	rb.sayAndWrapError("rhinof1Hi")
 }
 
-func detectInjection(input string) bool {
-	if input == "" {
-		return false
-	}
-	if input[0] == '/' || input[0] == '.' {
-		return true
-	}
-	return false
-}
-
-func (rb *RhinoBot) HandleChat() error {
+func (rb *RhinoBot) handleChat() error {
 	fmt.Printf("[%s] Watching #%s...\n", timeStamp(), rb.Channel)
 
 	tp := textproto.NewReader(bufio.NewReader(rb.conn))
 	for {
 		line, err := tp.ReadLine()
 		if err != nil {
-			rb.Disconnect()
+			rb.Stop()
 			return errors.New("failed to read line from channel, disconnected")
 		}
 
@@ -140,9 +192,7 @@ func (rb *RhinoBot) HandleChat() error {
 						cmdInput := cmdMatches[2]
 
 						if detectInjection(cmdInput) {
-							if sayErr := rb.Say("Nice try"); sayErr != nil {
-								fmt.Printf("Error in Say(): %v\n", sayErr)
-							}
+							rb.sayAndWrapError("Nice try")
 							continue
 						}
 
@@ -157,15 +207,7 @@ func (rb *RhinoBot) HandleChat() error {
 						}
 					} else {
 						for _, conditional := range rb.conditionals {
-							response, _ := conditional.Handle(msg)
-							if response != "" {
-								err = rb.Say(response)
-								if err != nil {
-									fmt.Printf("Error: %v\n", err)
-									if sayErr := rb.Say(OopsMsg); sayErr != nil {
-										fmt.Printf("Error in Say(): %v\n", sayErr)
-									}
-								}
+							if rb.handleConditional(conditional, msg) {
 								break
 							}
 						}
@@ -177,88 +219,37 @@ func (rb *RhinoBot) HandleChat() error {
 	}
 }
 
+func detectInjection(input string) bool {
+	if input == "" {
+		return false
+	}
+	return input[0] == '/' || input[0] == '.'
+}
+
 func (rb *RhinoBot) handleCommand(registeredCommand behavior.Command, message string) {
 	if registeredCommand.OnCooldown() {
 		fmt.Printf("[%s] Command \"%v\" is still on cooldown\n", timeStamp(), registeredCommand.Name())
 		return
 	}
 
-	var sayErr error
 	if response, err := registeredCommand.Handle(message); err != nil {
 		fmt.Printf("Error: %v\n", err)
-		sayErr = rb.Say(OopsMsg)
+		rb.sayAndWrapError(OopsMsg)
 	} else {
-		sayErr = rb.Say(response)
-	}
-
-	if sayErr != nil {
-		fmt.Printf("Error in Say(): %v\n", sayErr)
+		rb.sayAndWrapError(response)
 	}
 }
 
-func (rb *RhinoBot) JoinChannel() {
-	fmt.Printf("[%s] Joining #%s...\n", timeStamp(), rb.Channel)
-	_, _ = rb.conn.Write([]byte("PASS " + rb.token + "\r\n"))
-	_, _ = rb.conn.Write([]byte("NICK " + rb.Name + "\r\n"))
-	_, _ = rb.conn.Write([]byte("JOIN #" + rb.Channel + "\r\n"))
-	_, _ = rb.conn.Write([]byte("CAP REQ :twitch.tv/tags\r\n"))
-
-	fmt.Printf("[%s] Joined #%s as @%s!\n", timeStamp(), rb.Channel, rb.Name)
-
-	if sayErr := rb.Say("rhinof1Hi"); sayErr != nil {
-		fmt.Printf("Error in Say(): %v\n", sayErr)
+func (rb *RhinoBot) handleConditional(registeredConditional behavior.Conditional, message string) bool {
+	if response, err := registeredConditional.Handle(message); err != nil {
+		fmt.Printf("Error: %v\n", err)
+		rb.sayAndWrapError(OopsMsg)
+		return false
+	} else if response != "" {
+		rb.sayAndWrapError(response)
+		return true
 	}
-}
-
-func (rb *RhinoBot) ReadCredentials() error {
-	token, err := os.ReadFile(rb.PrivatePath)
-	if err != nil {
-		return err
-	}
-
-	rb.token = string(token)
-
-	return nil
-}
-
-func (rb *RhinoBot) Say(msg string) error {
-	if msg == "" {
-		return errors.New("msg was empty")
-	}
-
-	// check if message is too large for IRC
-	if len(msg) > 512 {
-		return errors.New("msg exceeded 512 bytes")
-	}
-
-	_, err := rb.conn.Write([]byte(fmt.Sprintf("PRIVMSG #%s :%s\r\n", rb.Channel, msg)))
-	if nil != err {
-		return err
-	}
-	return nil
-}
-
-func (rb *RhinoBot) Start() {
-	err := rb.ReadCredentials()
-	if nil != err {
-		fmt.Println(err)
-		fmt.Println("Aborting...")
-		return
-	}
-
-	for {
-		rb.Connect()
-		rb.JoinChannel()
-		err = rb.HandleChat()
-		if nil != err {
-			// attempts to reconnect upon unexpected chat error
-			time.Sleep(1000 * time.Millisecond)
-			fmt.Println(err)
-			fmt.Println("Starting bot again...")
-		} else {
-			return
-		}
-	}
+	return false
 }
 
 func timeStamp() string {
