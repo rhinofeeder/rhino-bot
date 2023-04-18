@@ -41,7 +41,7 @@ var conditionals = []behavior.Conditional{
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	rhinoBot := singleton.NewRhinoBot()
+	rhinoBot := singleton.GetRhinoBot()
 
 	rhinoBot.RegisterCommands(commands...)
 	rhinoBot.RegisterTimers(timers...)

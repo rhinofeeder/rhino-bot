@@ -7,7 +7,7 @@ import (
 
 var rhinoBot *bot.RhinoBot
 
-func NewRhinoBot() *bot.RhinoBot {
+func newRhinoBot() *bot.RhinoBot {
 	rhinoBot = &bot.RhinoBot{
 		Channel: "rhinofeeder",
 		MsgRate: time.Duration(30/100) * time.Millisecond,
@@ -17,5 +17,8 @@ func NewRhinoBot() *bot.RhinoBot {
 }
 
 func GetRhinoBot() *bot.RhinoBot {
+	if rhinoBot == nil {
+		return newRhinoBot()
+	}
 	return rhinoBot
 }
