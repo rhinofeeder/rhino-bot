@@ -54,6 +54,11 @@ func TestSoCommand_Handle(t *testing.T) {
 			message: "aaaaaaaaaaaaaaaaaaaaaaaaaa",
 			wantErr: true,
 		},
+		{
+			name:    "contains an @",
+			message: "@rhinofeeder",
+			want:    "/me shoutouts to rhinofeeder at https://twitch.tv/rhinofeeder",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -19,6 +19,9 @@ func (sc *SoCommand) Name() string {
 
 func (sc *SoCommand) Handle(message string) (string, error) {
 	sc.lastCalled = time.Now()
+	if message[0] == '@' {
+		message = message[1:]
+	}
 	if UsernameRegex.MatchString(message) {
 		return fmt.Sprintf("/me shoutouts to %v at https://twitch.tv/%v", message, message), nil
 	}
