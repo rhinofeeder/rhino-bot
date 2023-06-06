@@ -2,7 +2,7 @@ package command
 
 import (
 	"fmt"
-	"math/rand"
+	"rhino-bot/singleton"
 	"time"
 )
 
@@ -17,27 +17,27 @@ type Strat struct {
 
 func getLeftRight() string {
 	options := []string{"left", "right"}
-	return options[rand.Intn(len(options))]
+	return options[singleton.GetRandom().Intn(len(options))]
 }
 
 func getOrdinalDirection() string {
 	options := []string{"left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right"}
-	return options[rand.Intn(len(options))]
+	return options[singleton.GetRandom().Intn(len(options))]
 }
 
 func getEnemy() string {
 	options := []string{"tiktik", "vengefly", "durandoo", "aspid", "spikes", "sawblades", "mantis", "bluggsac", "soul totem"}
-	return options[rand.Intn(len(options))]
+	return options[singleton.GetRandom().Intn(len(options))]
 }
 
 func getObject() string {
 	options := []string{"geo", "relic", "journal entry", "ability", "eggu"}
-	return options[rand.Intn(len(options))]
+	return options[singleton.GetRandom().Intn(len(options))]
 }
 
 func getFloorObject() string {
 	options := []string{"acid", "water", "spikes", "void pool"}
-	return options[rand.Intn(len(options))]
+	return options[singleton.GetRandom().Intn(len(options))]
 }
 
 var strats = []Strat{
@@ -65,17 +65,16 @@ func (spc *StratPlsCommand) Name() string {
 
 func (spc *StratPlsCommand) Handle(message string) (string, error) {
 	spc.lastCalled = time.Now()
-	rand.Seed(time.Now().UnixNano())
 	// Copy the strats slice so we can mutate it and remove elements
 	stratsCopy := strats
-	numStrats := rand.Intn(maxStrats-minStrats) + minStrats
+	numStrats := singleton.GetRandom().Intn(maxStrats-minStrats) + minStrats
 	result := "Ok so, "
 	for i := 0; i < numStrats; i++ {
 		if i > 0 {
 			result += ", then "
 		}
 		lenStrats := len(stratsCopy)
-		stratIndex := rand.Intn(lenStrats)
+		stratIndex := singleton.GetRandom().Intn(lenStrats)
 		strat := stratsCopy[stratIndex]
 		stratsCopy = append(stratsCopy[:stratIndex], stratsCopy[stratIndex+1:]...)
 		result += fmt.Sprintf(strat.Template, strat.Replacement())

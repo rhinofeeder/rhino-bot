@@ -1,14 +1,13 @@
 package main
 
 import (
-	"math/rand"
 	"os"
 	"rhino-bot/behavior"
 	"rhino-bot/behavior/command"
 	"rhino-bot/behavior/conditional"
 	"rhino-bot/behavior/timer"
 	"rhino-bot/singleton"
-	"time"
+	"rhino-bot/utils"
 )
 
 var commands = []behavior.Command{
@@ -33,14 +32,14 @@ var timers = []behavior.Timer{
 }
 
 var conditionals = []behavior.Conditional{
-	&conditional.DadConditional{RngFunc: behavior.GenerateBool},
-	&conditional.SpongemockConditional{RngFunc: behavior.GenerateBool},
-	&conditional.WhatsupConditional{RngFunc: behavior.GenerateBool},
+	&conditional.DadConditional{RngFunc: utils.RandomBool},
+	&conditional.NoConditional{},
+	&conditional.SpongemockConditional{RngFunc: utils.RandomBool},
+	&conditional.WhatsupConditional{RngFunc: utils.RandomBool},
+	&conditional.YesConditional{},
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-
 	rhinoBot := singleton.GetRhinoBot()
 
 	rhinoBot.RegisterCommands(commands...)

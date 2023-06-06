@@ -1,7 +1,7 @@
 package command
 
 import (
-	"math/rand"
+	"rhino-bot/singleton"
 	"time"
 )
 
@@ -34,7 +34,7 @@ func (dc *DnCommand) Name() string {
 
 func (dc *DnCommand) Handle(string) (string, error) {
 	dc.lastCalled = time.Now()
-	return setups[rand.Intn(len(setups))], nil
+	return setups[singleton.GetRandom().Intn(len(setups))], nil
 }
 
 func (dc *DnCommand) RequiresMod() bool {

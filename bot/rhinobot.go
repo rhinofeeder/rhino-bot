@@ -207,9 +207,7 @@ func (rb *RhinoBot) handleChat() error {
 						}
 					} else {
 						for _, conditional := range rb.conditionals {
-							if rb.handleConditional(conditional, msg) {
-								break
-							}
+							_ = rb.handleConditional(conditional, msg)
 						}
 					}
 				}
