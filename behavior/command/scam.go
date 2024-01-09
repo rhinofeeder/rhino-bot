@@ -11,9 +11,7 @@ type ScamCommand struct {
 	lastCalled time.Time
 }
 
-func (sc *ScamCommand) Name() string {
-	return "scam"
-}
+func (sc *ScamCommand) Name() string { return "scam" }
 
 func (sc *ScamCommand) Handle(msg string) (string, error) {
 	sc.lastCalled = time.Now()
@@ -33,9 +31,7 @@ func (sc *ScamCommand) Handle(msg string) (string, error) {
 	return fmt.Sprintf("%v is a scam created by Big %v to sell more %v", msg, strings.Join(msgWords, " "), msg), nil
 }
 
-func (sc *ScamCommand) RequiresMod() bool {
-	return false
-}
+func (sc *ScamCommand) RequiresMod() bool { return false }
 
 func (sc *ScamCommand) OnCooldown() bool {
 	return !sc.lastCalled.IsZero() && time.Since(sc.lastCalled) < 5*time.Second

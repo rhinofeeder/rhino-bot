@@ -23,13 +23,9 @@ func (hc *HelpCommand) Handle(message string) (string, error) {
 	return targetCommand.Help(), nil
 }
 
-func (hc *HelpCommand) Name() string {
-	return "help"
-}
+func (hc *HelpCommand) Name() string { return "help" }
 
-func (hc *HelpCommand) RequiresMod() bool {
-	return false
-}
+func (hc *HelpCommand) RequiresMod() bool { return false }
 
 func (hc *HelpCommand) OnCooldown() bool {
 	return !hc.lastCalled.IsZero() && time.Since(hc.lastCalled) < 5*time.Second

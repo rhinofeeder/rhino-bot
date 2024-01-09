@@ -26,20 +26,17 @@ var setups = []string{
 	"Is it true that you caught ligma?",
 	"Hey can you give me back my CD's?",
 	"Do you know about the Greek Warrior Bophades?",
+	"Have you been to Room 40?",
 }
 
-func (dc *DnCommand) Name() string {
-	return "dn"
-}
+func (dc *DnCommand) Name() string { return "dn" }
 
 func (dc *DnCommand) Handle(string) (string, error) {
 	dc.lastCalled = time.Now()
 	return setups[singleton.GetRandom().Intn(len(setups))], nil
 }
 
-func (dc *DnCommand) RequiresMod() bool {
-	return false
-}
+func (dc *DnCommand) RequiresMod() bool { return false }
 
 func (dc *DnCommand) OnCooldown() bool {
 	return !dc.lastCalled.IsZero() && time.Since(dc.lastCalled) < 10*time.Second

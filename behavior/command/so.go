@@ -13,9 +13,7 @@ type SoCommand struct {
 
 var UsernameRegex = regexp.MustCompile(`^[a-zA-Z0-9]\w{3,24}$`)
 
-func (sc *SoCommand) Name() string {
-	return "so"
-}
+func (sc *SoCommand) Name() string { return "so" }
 
 func (sc *SoCommand) Handle(message string) (string, error) {
 	sc.lastCalled = time.Now()
@@ -28,9 +26,7 @@ func (sc *SoCommand) Handle(message string) (string, error) {
 	return "", errors.New("input is not a valid twitch username")
 }
 
-func (sc *SoCommand) RequiresMod() bool {
-	return true
-}
+func (sc *SoCommand) RequiresMod() bool { return true }
 
 func (sc *SoCommand) OnCooldown() bool {
 	return !sc.lastCalled.IsZero() && time.Since(sc.lastCalled) < 5*time.Second

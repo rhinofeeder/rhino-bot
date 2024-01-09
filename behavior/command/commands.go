@@ -26,13 +26,9 @@ func (cc *CommandsCommand) Handle(string) (string, error) {
 	return strings.Join(commandNames, ", "), nil
 }
 
-func (cc *CommandsCommand) Name() string {
-	return "commands"
-}
+func (cc *CommandsCommand) Name() string { return "commands" }
 
-func (cc *CommandsCommand) RequiresMod() bool {
-	return false
-}
+func (cc *CommandsCommand) RequiresMod() bool { return false }
 
 func (cc *CommandsCommand) OnCooldown() bool {
 	return !cc.lastCalled.IsZero() && time.Since(cc.lastCalled) < 5*time.Second

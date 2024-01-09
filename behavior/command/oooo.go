@@ -18,9 +18,7 @@ type OoooCommand struct {
 	lastCalled time.Time
 }
 
-func (oc *OoooCommand) Name() string {
-	return "oooo"
-}
+func (oc *OoooCommand) Name() string { return "oooo" }
 
 // Handle OOOO-ifying a provided string
 // - replace any "o"s if they exist
@@ -80,9 +78,7 @@ func (oc *OoooCommand) Handle(message string) (string, error) {
 	return strings.TrimSpace(oooo), nil
 }
 
-func (oc *OoooCommand) RequiresMod() bool {
-	return false
-}
+func (oc *OoooCommand) RequiresMod() bool { return false }
 
 func (oc *OoooCommand) OnCooldown() bool {
 	return !oc.lastCalled.IsZero() && time.Since(oc.lastCalled) < 5*time.Second

@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-const (
-	filePath = "persistence/rhinosfed"
-)
+const filePath = "persistence/rhinosfed"
 
 type FeedCommand struct {
 	ReadFileFunc  func(name string) ([]byte, error)
@@ -17,9 +15,7 @@ type FeedCommand struct {
 	lastCalled    time.Time
 }
 
-func (fc *FeedCommand) Name() string {
-	return "feed"
-}
+func (fc *FeedCommand) Name() string { return "feed" }
 
 func (fc *FeedCommand) Handle(string) (string, error) {
 	fc.lastCalled = time.Now()
@@ -38,9 +34,7 @@ func (fc *FeedCommand) Handle(string) (string, error) {
 	return fmt.Sprintf("Rhinos fed: %v", rhinosFed), nil
 }
 
-func (fc *FeedCommand) RequiresMod() bool {
-	return false
-}
+func (fc *FeedCommand) RequiresMod() bool { return false }
 
 func (fc *FeedCommand) OnCooldown() bool {
 	return !fc.lastCalled.IsZero() && time.Since(fc.lastCalled) < 5*time.Second

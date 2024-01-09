@@ -59,9 +59,7 @@ var strats = []Strat{
 const minStrats = 3
 const maxStrats = 5
 
-func (spc *StratPlsCommand) Name() string {
-	return "stratpls"
-}
+func (spc *StratPlsCommand) Name() string { return "stratpls" }
 
 func (spc *StratPlsCommand) Handle(message string) (string, error) {
 	spc.lastCalled = time.Now()
@@ -82,9 +80,7 @@ func (spc *StratPlsCommand) Handle(message string) (string, error) {
 	return result, nil
 }
 
-func (spc *StratPlsCommand) RequiresMod() bool {
-	return false
-}
+func (spc *StratPlsCommand) RequiresMod() bool { return false }
 
 func (spc *StratPlsCommand) OnCooldown() bool {
 	return !spc.lastCalled.IsZero() && time.Since(spc.lastCalled) < 5*time.Second
