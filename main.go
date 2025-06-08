@@ -12,7 +12,6 @@ import (
 
 var commands = []behavior.Command{
 	&command.CommandsCommand{GetRhinoBotFunc: singleton.GetRhinoBot},
-	&command.CoopCommand{},
 	&command.DiscordCommand{},
 	&command.DnCommand{},
 	&command.FeedCommand{ReadFileFunc: os.ReadFile, WriteFileFunc: os.WriteFile},
